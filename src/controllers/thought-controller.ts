@@ -3,7 +3,7 @@ import { thought, user } from '../models/index.js';
 
 export const getThoughts = async (_req: Request, res: Response) => {
     try {
-        const dbThoughtData = await Thought.find()
+        const dbThoughtData = await thought.find()
             .sort({ createdAt: -1 });
 
         return res.json(dbThoughtData);
@@ -15,7 +15,7 @@ export const getThoughts = async (_req: Request, res: Response) => {
 
 export const getSingleThought = async (req: Request, res: Response) => {
     try {
-        const dbThoughtData = await Thought.findOne({ _id: req.params.thoughtId });
+        const dbThoughtData = await thought.findOne({ _id: req.params.thoughtId });
 
         if (!dbThoughtData) {
             return res.status(404).json({ message: 'No thought with this id!' });
@@ -30,9 +30,9 @@ export const getSingleThought = async (req: Request, res: Response) => {
 
 export const createThought = async (req: Request, res: Response) => {
     try {
-        const dbThoughtData = await Thought.create(req.body);
+        const dbThoughtData = await thought.create(req.body);
 
-        const dbUserData = await User.findOneAndUpdate(
+        const dbUserData = await user.findOneAndUpdate(
             { username: req.body.username },
             { $push: { thoughts: dbThoughtData._id } },
             { new: true }
@@ -51,7 +51,7 @@ export const createThought = async (req: Request, res: Response) => {
 
 export const updateThought = async (req: Request, res: Response) => {
     try {
-        const dbThoughtData = await Thought.findOneAndUpdate({ _id: req.params.thoughtId }, { $set: req.body }, { runValidators: true, new: true });
+        const dbThoughtData = await thought.findOneAndUpdate({ _id: req.params.thoughtId }, { $set: req.body }, { runValidators: true, new: true });
 
         if (!dbThoughtData) {
             return res.status(404).json({ message: 'No thought with this id!' });
@@ -66,13 +66,13 @@ export const updateThought = async (req: Request, res: Response) => {
 
 export const deleteThought = async (req: Request, res: Response) => {
     try {
-        const dbThoughtData = await Thought.findOneAndDelete({ _id: req.params.thoughtId })
+        const dbThoughtData = await thought.findOneAndDelete({ _id: req.params.thoughtId })
 
         if (!dbThoughtData) {
             return res.status(404).json({ message: 'No thought with this id!' });
         }
 
-        const dbUserData = User.findOneAndUpdate(
+        const dbUserData = await user.findOneAndUpdate(
             { thoughts: req.params.thoughtId },
             { $pull: { thoughts: req.params.thoughtId } },
             { new: true }
@@ -91,7 +91,7 @@ export const deleteThought = async (req: Request, res: Response) => {
 
 export const addReaction = async (req: Request, res: Response) => {
     try {
-        const dbThoughtData = await Thought.findOneAndUpdate(
+        const dbThoughtData = await thought.findOneAndUpdate(
             { _id: req.params.thoughtId },
             { $addToSet: { reactions: req.body } },
             { runValidators: true, new: true }
@@ -110,7 +110,7 @@ export const addReaction = async (req: Request, res: Response) => {
 
 export const removeReaction = async (req: Request, res: Response) => {
     try {
-        const dbThoughtData = await Thought.findOneAndUpdate(
+        const dbThoughtData = await thought.findOneAndUpdate(
             { _id: req.params.thoughtId },
             { $pull: { reactions: { reactionId: req.params.reactionId } } },
             { runValidators: true, new: true }

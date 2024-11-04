@@ -1,4 +1,4 @@
-import thought from './thought.js';
-import user from './user.js';
+import thought from './Thought.js';
+import user from './User.js';
 
 export { thought, user };
