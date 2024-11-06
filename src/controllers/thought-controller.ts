@@ -54,7 +54,7 @@ export const updateThought = async (req: Request, res: Response) => {
         const dbThoughtData = await thought.findOneAndUpdate({ _id: req.params.thoughtId }, { $set: req.body }, { runValidators: true, new: true });
 
         if (!dbThoughtData) {
-            return res.status(404).json({ message: 'No thought with this id!' });
+            return res.status(404).json({ message: 'No thought was found with this id!' });
         }
 
         return res.json(dbThoughtData);
